@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/chatbot.js"></script>
+
+<body>
+<aside th:fragment="sidebar">
+
+    <button id="toggle-button" onclick="toggleChatbot()" class="fixed-button">
+        <img src="/images/discord-logo2.png" alt="챗봇 아이콘" class="button-icon">
+        챗봇에게<br>물어보기
+    </button>
+
+    <div id="chatbot-container" class="draggable">
+        <div class="handle"><span th:onclick="fn_hide()" th:text="x"></span></div>
+        <iframe
+                allow="microphone;"
+                width="350"
+                height="430"
+                src="https://console.dialogflow.com/api-client/demo/embedded/167e82f5-7305-4cd8-beca-81a415a9e1d1">
+        </iframe>
+    </div>
+</aside>
+</body>
+</html>
+

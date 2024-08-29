@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="scv.DevOpsunity.toss.dao.TossDAO">
+
+    <resultMap id="TossResultMap" type="ProductsDTO">
+        <result property="orderNo" column="orderNo" />
+        <result property="amount" column="amount" />
+        <result property="orderName" column="orderName" />
+        <result property="orderDate" column="orderDate" />
+        <result property="customerName" column="customerName" />
+    </resultMap>
+
+
+    <insert id="insertProduct" parameterType="ProductsDTO">
+        INSERT INTO pay_tbl (amount, orderName, customerName, orderDate)
+        VALUES (#{amount}, #{orderName}, #{customerName} , now())
+    </insert>
+
+
+    <select id="selectOrder" parameterType="productsDTO">
+
+        select orderNo,amount,orderName,orderDate
+        from pay_tbl
+        where customerName=#{customerName}
+    </select>
+
+
+</mapper>

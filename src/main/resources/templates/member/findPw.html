@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="layout/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 찾기 결과</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <h2>비밀번호 찾기 결과</h2>
+    <p>임시 비밀번호가 <span th:text="${email}"></span> 이메일로 전송되었습니다.</p>
+    <p>이메일을 확인하시고 로그인 후 비밀번호를 변경해주세요.</p>
+    <a th:href="@{/member/loginForm.do}">로그인 페이지로 이동</a>
+</th:block>
+</body>
+</html>

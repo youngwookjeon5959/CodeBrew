@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="layout/layout">
+<head>
+    <title>New Notice</title>
+    <style>
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #595959;
+        }
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .field {
+
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .field label {
+
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .field input, .field textarea {
+
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 1em;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-decoration: none;
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+        .button:hover {
+            background: #555;
+        }
+        .button.secondary {
+            background: #666;
+            color: #fff;
+            border-color: #666;
+        }
+        .button.secondary:hover {
+            background: #888;
+        }
+        .button.primary {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+        .button.primary:hover {
+            background: #222;
+        }
+    </style>
+</head>
+<body th:with="isPost=${notice} == null ? true : false">
+<th:block layout:fragment="content">
+<div class="container">
+    <form th:method="'post'" th:action="@{/notices/save}" class="form">
+        <div class="field">
+            <label>제목</label>
+            <input type="text" name="title" placeholder="제목을 입력해주세요."
+                   th:value="${isPost} ? '' : ${notice.title}"
+                   required>
+        </div>
+        <div class="field">
+            <label>내용</label>
+            <textarea name="content" placeholder="내용을 입력해주세요."
+                      th:text="${isPost} ? '' : ${notice.content}" required></textarea>
+        </div>
+        <input type="hidden" name="id" th:value="${isPost} ? '' : ${notice.id}"/>
+        <div class="buttons">
+            <button type="submit" class="button primary">
+                <i class="icon edit"></i> 등록
+            </button>
+            <button id="back" type="button" class="button secondary">취소</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#back").click(function () {
+            window.location.href = "/notices";
+        });
+    });
+</script>
+</th:block>
+</body>
+</html>

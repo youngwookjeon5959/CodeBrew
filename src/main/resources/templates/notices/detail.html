@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="layout/layout">
+<head>
+    <title th:text="'공지사항 상세 - ' + ${notice.title}">공지사항 상세</title>
+    <style>
+
+        .segment {
+            width: 80%;
+            background: #595959;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px auto;
+        }
+        .comments .comment .content {
+            margin-bottom: 10px;
+        }
+        .metadata {
+            font-size: 0.9em;
+            color: #eeeeee;
+        }
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+        .message {
+            margin: 10px auto;
+            width: 80%;
+            background: #eeeeee;
+            border: 1px solid #b6e0fe;
+            padding: 15px;
+            border-radius: 4px;
+            color: black;
+        }
+        .message .header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .message p {
+            margin: 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 1em;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .button.left {
+            float: left;
+        }
+        .button.right {
+            float: right;
+        }
+        .button.red {
+            background: #e74c3c;
+            color: #fff;
+            border-color: #e74c3c;
+        }
+        .button.red:hover {
+            background: #c0392b;
+        }
+        .button:hover {
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>djdddas
+<th:block layout:fragment="content">
+<div class="segment">
+    <div class="comments">
+        <div class="comment">
+            <div class="content">
+                <a class="author" th:text="'글쓴이 : '+${notice.author}"></a>
+
+                <div class="metadata">
+                    <div class="date" th:text="'작성일시 : '+${notice.created_at}"></div>
+                    <div class="date" th:text="'최종 수정일시 : '+${notice.updated_at}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="message">
+        <div class="header">
+            <p th:text="${notice.title}"></p>
+        </div>
+    </div>
+
+    <div class="message" style="min-height: 150px">
+        <p th:text="${notice.content}"></p>
+    </div>
+</div>
+<div>
+    <button id="back" class="button left">이전으로</button>
+    <form style="display: inline" th:method="get" th:action="@{'/notices/delete/' + ${notice.id}}"
+          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+        <button type="submit" class="button red right">삭제</button>
+    </form>
+    <a th:href="@{'/notices/edit/' + ${notice.id}}" class="button right">수정</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#back").click(function () {
+        window.location.href = "/notices"; // 목록 페이지로 이동
+    });
+</script>
+</th:block>
+</body>
+</html>

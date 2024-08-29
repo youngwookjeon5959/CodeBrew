@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout">
+<head>
+  <meta charset="UTF-8">
+  <title>아이디 찾기 결과</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+  <div>
+    <h2>아이디 찾기 결과</h2>
+    <!-- 찾은 아이디 출력 -->
+    <div th:if="${foundId != null}">
+      <p>찾은 아이디: <span th:text="${foundId}"></span></p>
+    </div>
+
+    <!-- 에러 메시지 출력 -->
+    <div th:if="${error != null}">
+      <p th:text="${error}"></p>
+    </div>
+
+    <a th:href="@{/member/loginForm.do}">로그인 페이지로 이동</a>
+  </div>
+</th:block>
+</body>
+</html>

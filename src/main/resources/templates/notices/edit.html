@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="layout/layout">
+<head>
+    <title>Edit Notice</title>
+    <style>
+
+        .container {
+            width: 80%;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #595959;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .field label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .field input, .field textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 1em;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-decoration: none;
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button.secondary {
+            background: #6c757d;
+            color: #fff;
+            border-color: #6c757d;
+        }
+        .button.secondary:hover {
+            background: #5a6268;
+        }
+        .button.primary {
+            background: #28a745;
+            color: #fff;
+            border-color: #28a745;
+        }
+        .button.primary:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+<div class="container">
+    <h1>Edit Notice</h1>
+    <form th:action="@{/notices/update/{id}(id=${noticeForm.id})}" th:object="${noticeForm}" method="post" class="form">
+        <div class="field">
+            <label>Title:</label>
+            <input type="text" th:field="*{title}" required/>
+        </div>
+        <div class="field">
+            <label>Content:</label>
+            <textarea th:field="*{content}" required></textarea>
+        </div>
+        <div class="buttons">
+            <button type="submit" class="button primary">
+                <i class="icon edit"></i>
+                수정하기
+            </button>
+            <a href="/notices" class="button secondary">리스트로 돌아가기</a>
+        </div>
+    </form>
+</div>
+</th:block>
+</body>
+</html>

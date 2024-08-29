@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="layout/layout">
+<head>
+    <title>공지사항</title>
+    <style>
+        .main-container {
+            width: 80%;
+            height: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            border: 1px solid #111111;
+            padding: 10px;
+            text-align: center;
+        }
+        table th {
+            background-color: #595959;
+        }
+        table tr:nth-child(even) {
+            background-color: #a9a9a9;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 1em;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-decoration: none;
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+            float: right;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button.primary {
+            background: #28a745;
+            color: #fff;
+            border-color: #28a745;
+        }
+        .button.primary:hover {
+            background: #218838;
+        }
+        .center-aligned {
+            text-align: center;
+        }
+
+        /* 글 제목 색상 변경 스타일 */
+        .notice-title {
+            color: #fff; /* 원하는 색상 코드 입력 */
+        }
+         /* 클릭 후의 색상 */
+        .notice-title:visited {
+            color: #7a33ff; /* 방문 후의 색상 */
+        }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="main-container">
+        <div>
+            <h1>공지사항 게시판</h1>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th class="one wide center-aligned">번호</th>
+                <th class="ten wide center-aligned">제목</th>
+                <th class="two wide center-aligned">글쓴이</th>
+                <th class="three wide center-aligned">작성일자</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="notice : ${notices}">
+                <td th:text="${notice.id}" class="center-aligned"></td>
+                <td class="center-aligned">
+                    <a th:href="@{'/notices/'+${notice.id}}" th:text="${notice.title}" class="notice-title"></a>
+                </td>
+                <td th:text="${notice.author}"></td>
+                <td th:text="${notice.updated_at}" class="center-aligned"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div>
+            <!-- 세션의 userId가 'admin'인 경우에만 글쓰기 버튼을 표시 -->
+            <a th:if="${session.userId == 'admin'}" th:href="@{/notices/new}" class="button primary">글쓰기</a>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

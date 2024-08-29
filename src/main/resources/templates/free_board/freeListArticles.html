@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="layout/layout">
+<head>
+	<meta charset="UTF-8">
+	<title>메인페이지</title>
+
+	<style>
+
+		.row{
+			width: 70%;
+			margin: 0 auto;
+
+		}
+
+		.slider {
+			padding: 20px;
+			overflow: hidden;
+			position: relative;
+			width: 570px;
+			height: 300px;
+			margin: 0 auto;
+			border: 1px solid black;
+		}
+		.slide_list{
+			overflow: hidden;
+			width: 1700px;
+			position: relative;
+			display: flex; /* Flexbox 사용 */
+
+		}
+
+		.slider h2{
+			text-align: center;
+
+		}
+
+		.inner{
+			overflow: hidden;
+			margin: 0 auto;
+		}
+
+
+		.sliderTop{
+			margin-left: 20px;
+			padding: 15px;
+		}
+
+		.sliderBottom{
+			margin: 0;
+			display: grid;
+			place-items: end;
+		}
+		.sliderBottom p {
+			text-align: right;
+		}
+
+
+		.btn{
+			position: relative;
+		}
+
+		.btn_prev {
+			position: absolute;
+			bottom: 130px;
+			width: 35px;
+			height: 35px;
+			background-size: cover;
+			cursor: pointer;
+			left: 10px;
+			transform: translate(0,-50%);
+		}
+		.btn_next {
+			position: absolute;
+			bottom: 130px;
+			width: 35px;
+			height: 35px;
+			background-size: cover;
+			cursor: pointer;
+			right:20px;
+			transform: translate(0,-50%);
+		}
+
+		.fameTitle{
+			color: #ffa500;
+		}
+
+
+
+		.featured-post h1{
+			text-align: center;
+		}
+	</style>
+
+
+
+	<style type="text/css">
+		a {
+			text-decoration: none;
+			transition: color 0.3s;
+		}
+
+		a:hover {
+			text-decoration: underline;
+			color: #ffa500; /* 호버 시 색상 변경 */
+		}
+
+		.target {
+			color: #e74c3c;
+			font-weight: bold;
+			font-size: 1.6em; /* 글꼴 크기 약간 키움 */
+		}
+
+		.noLine {
+			color: #333;
+			font-weight: normal;
+			font-size: 1em;
+		}
+
+		#listToArticle {
+			margin: 0 auto;
+			width: 80%;
+			padding: 20px;
+			display: block; /* 카드가 세로로 나열되도록 변경 */
+		}
+
+		.listToArticles {
+			text-align: left; /* 텍스트 왼쪽 정렬 */
+			border-radius: 10px;
+			width: 100%; /* 카드가 가로로 꽉 차도록 설정 */
+			margin-bottom: 20px; /* 카드 사이 여백 추가 */
+			padding: 20px;
+			background-color: #1c2b33;
+			color: #fff;
+			transition: transform 0.3s, box-shadow 0.3s;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.listToArticles:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+		}
+
+		.listToArticlesTitle {
+			display: block; /* 제목과 내용이 세로로 나열되도록 변경 */
+		}
+
+		.listToArticles h3 {
+			margin-top: 10px;
+			font-size: 1.3em;
+			color: #fff;
+		}
+
+		.listToArticles p {
+			margin: 5px 0;
+			font-size: 1em;
+			color: #ddd; /* 글씨 색상 조금 더 연하게 변경 */
+		}
+
+		.listToArticles a {
+			color: #2980b9;
+		}
+
+		.listToArticles a:hover {
+			text-decoration: underline;
+			color: #3498db;
+		}
+
+		.a_btn {
+			padding: 12px 24px;
+			margin: 10px 5px;
+			border: none;
+			border-radius: 5px;
+			background-color: #3498db;
+			color: #ffffff;
+			cursor: pointer;
+			font-size: 16px;
+			text-align: right;
+			box-shadow: 0 0 15px rgba(52, 152, 219, 0.2);
+			transition: font-size 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+		}
+
+		.a_btn:hover {
+			font-size: 1.1em;
+			background-color: #2980b9;
+			box-shadow: 0 0 20px rgba(52, 152, 219, 0.7);
+		}
+
+		.searchdiv {
+			text-align: center;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-bottom: 20px;
+			padding: 20px;
+			border-radius: 8px;
+		}
+
+		.searchdiv select,
+		.searchdiv input,
+		.searchdiv button {
+			margin: 10px;
+			padding: 10px;
+			border-radius: 5px;
+		}
+
+		.viewTop {
+			background-color: #ffa500;
+			padding: 15px 10px;
+			border-radius: 10px;
+			color: #fff;
+			font-size: 1.2em;
+			text-align: center;
+			box-shadow: 0 0 15px rgba(255, 165, 0, 0.3);
+		}
+	</style>
+
+	<script>
+		function fn_free_articleForm(isLogOn, freeArticleForm, freeLoginForm){
+            if(isLogOn == true){
+                location.href = freeArticleForm;
+            }else{
+                alert("로그인 후 글쓰기가 가능합니다.");
+                location.href=freeLoginForm+ '?action=/board/freeArticleForm.do';
+            }
+        }
+
+        function search() {
+              var keyword = document.getElementById("keyword").value;
+              if (keyword == "") {
+                alert("검색어를 입력하세요");
+                return false;
+              }
+        }
+
+	</script>
+	<script>
+
+		//슬라이드 기능
+		$(document).ready(function() {
+
+			let index = 0;
+			let sw = false;
+			let auto;
+			let pindex;
+			moveSlier(index);   // 웹 열자마자 무브슬라이더(사용자함수) 함수 자동으로 수행하기 위함
+			//autoSlider();       //  웹 열자마자 오토 슬라이더(사용자함수) 함수 자동으로 수행하기 위함
+
+
+			$('.btn_prev').click(function () {
+				/* if(index==0){
+                     index = 5
+                 }else*/
+				index--;
+				moveSlier(index);
+				//}
+			})
+
+			$('.btn_next').click(function () {
+				/*  if(index==4){
+                      index = -1
+                  }else{*/
+				index++;
+				moveSlier(index);
+				//}
+			})
+
+			//이미지 슬라이드 구현함수
+			function moveSlier(index) {
+				if (index < 3 && index > 0) {
+					$('.btn_prev').fadeIn('normal');
+					$('.btn_next').fadeIn('normal');
+				}
+				if (index == 2) {
+					$('.btn_next').fadeOut('normal');
+					$('.btn_prev').fadeIn('normal');
+				}
+				if (index == 0) {
+					$('.btn_prev').fadeOut('normal');
+					$('.btn_next').fadeIn('normal');
+				}
+
+				$('.slide_list').animate({
+					left: -(index * 570)
+				}, '500');
+			}//moveslider 끝!
+		})
+
+	</script>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+
+
+	<div class="featured-post">
+		<h1>현재 인기글
+	</div>
+	<div class="post-previews row mb-2">
+		<div class="inner">
+			<div class="slide_list">
+				<div class="col-md-6 post-preview slider" th:if="${top1Article != null}">
+					<h2 class="fameTitle">인기글 1위</h2>
+					<div class="sliderTop">
+						<h3 th:text="${top1Article.freeTitle}"></h3>
+						<p th:text="${top1Article.freeContent}"></p>
+					</div>
+					<!-- 이미지 표시 예시:
+                    <img th:if="${top3Article.freeImageFileName != null}" th:src="@{/fileupload/{fileName}(fileName=${top3Article.freeImageFileName})}" alt="Article Image"/>
+                    -->
+					<div class="sliderBottom">
+						<p>작성자 : <span th:text="${top1Article.id}"></span></p>
+						<a class="viewTop" th:href="@{/board/freeViewArticle.do(freeArticleNo=${top1Article.freeArticleNo})}">해당 글 자세히보기 ...</a>
+					</div>
+				</div>
+				<div class="col-md-6 post-preview slider" th:if="${top2Article != null}">
+					<h2 class="fameTitle">인기글 2위</h2>
+					<div class="sliderTop">
+						<h3 th:text="${top2Article.freeTitle}"></h3>
+						<p th:text="${top2Article.freeContent}"></p>
+					</div>
+					<div class="sliderBottom">
+						<p>작성자 : <span th:text="${top2Article.id}"></span></p>
+						<a class="viewTop" th:href="@{/board/freeViewArticle.do(freeArticleNo=${top2Article.freeArticleNo})}">해당 글 자세히보기 ...</a>
+					</div>
+				</div>
+				<div class="col-md-6 post-preview slider" th:if="${top3Article != null}">
+					<h2 class="fameTitle">인기글 3위</h2>
+					<div class="sliderTop">
+						<h3 th:text="${top3Article.freeTitle}"></h3>
+						<p th:text="${top3Article.freeContent}"></p>
+					</div>
+					<div class="sliderBottom">
+						<p>작성자 : <span th:text="${top3Article.id}"></span></p>
+						<a class="viewTop" th:href="@{/board/freeViewArticle.do(freeArticleNo=${top3Article.freeArticleNo})}">해당 글 자세히보기 ...</a>
+					</div>
+				</div>
+			</div>
+			<div class="btn">
+				<img th:src="@{/images/left_arrow.png}" class="btn btn_prev" alt="앞 페이지">
+				<img th:src="@{/images/right_arrow.png}" class="btn btn_next" alt="뒷 페이지">
+			</div>
+		</div>
+	</div>
+
+
+	<br>
+	<hr>	<!--구분선-->
+
+
+
+	<h2 align="center">글 목록창</h2>
+	<!--글 구현-->
+	<div id="listToArticle">
+
+		<div class="listToArticles" th:each="article : ${articleMap.articlesList}">
+			<a th:href="@{/board/freeViewArticle.do(freeArticleNo=${article.freeArticleNo})}">
+				<div class="listToArticlesTitle">
+					<h3 th:text=${article.freeTitle}></h3>
+				</div>
+				<div class="listToArticlesInfo">
+					<p>조회수: <span th:text="${article.readCount}"></span></p>
+					<p>작성자 : <span th:text=${article.id}></span> </p>
+					<p>작성일자 : <span th:text=${article.freeWriteDate}></span> </p>
+				</div>
+			</a>
+		</div>
+	</div>
+
+
+	<!--페이징 처리-->
+	<div align="center" th:if="${articleMap.totArticles > 10}" class="pagingpage">
+		<div th:if="${articleMap.totArticles > 100}">
+				<span th:each="num : ${#numbers.sequence(1, (articleMap.section > articleMap.totArticles / 100 ? (articleMap.totArticles % 100) / 10 + 1 : 10))}">
+					<span th:if="${articleMap.section > 1 and num == 1}">
+						<a th:href="@{/board/freeListArticles.do(section=${articleMap.section - 1}, pageNum=${(articleMap.section - 1) * 10})}">◀</a>
+					</span>
+					<span th:if="${num == (articleMap.pageNum % 10 == 0 ? 10 : articleMap.pageNum % 10)}">
+						<a class="target" th:href="@{/board/freeListArticles.do(section=${articleMap.section}, pageNum=${(articleMap.section - 1) * 10 + num})}" th:text="${(articleMap.section-1)*10+num}">}</a>
+					</span>
+					<span th:unless="${num == (articleMap.pageNum % 10 == 0 ? 10 : articleMap.pageNum % 10)}">
+						<a classs="noLine" th:href="@{/board/freeListArticles.do(section=${articleMap.section}, pageNum=${(articleMap.section - 1) * 10 + num})}"  th:text="${(articleMap.section-1)*10+num}"></a>
+					</span>
+					<span th:if="${num == 10}">
+						<a th:href="@{/board/freeListArticles.do(section=${articleMap.section + 1}, pageNum=${articleMap.section * 10 + 1})}">▶</a>
+					</span>
+				</span>
+		</div>
+		<div th:if="${articleMap.totArticles <= 100}">
+				<span th:each="num : ${#numbers.sequence(1,(articleMap.totArticles/10+1))}">
+					<span th:if="${num==articleMap.pageNum}">
+							<a class="target" th:href="@{/board/freeListArticles.do(section=${articleMap.section},pageNum=${num})}" th:text="${num}"></a>
+					</span>
+					<span th:unless="${num==articleMap.pageNum}">
+							<a class="noLine" th:href="@{/board/freeListArticles.do(section=${articleMap.section},pageNum=${num})}" th:text="${num}"></a>
+					</span>
+				</span>
+		</div>
+	</div>
+
+
+	<div class="searchdiv">
+		<form action="#" th:action="@{/board/freeReview.do}" th:object="${searchForm}" method="get">
+			<select th:field="*{type}">
+				<option value="title">제목</option>
+				<option value="writer">작성자</option>
+			</select>
+			<input type="text" th:field="*{keyword}" placeholder="검색어 입력" />
+			<button type="submit" onclick="search()">검색하기</button>
+			<a class="a_btn" th:href="'javascript:fn_free_articleForm(' + ${session.isLogOn} + ', \'/board/freeArticleForm.do\', \'/member/loginForm.do\')'"> 글쓰기 </a>
+		</form>
+	</div>
+
+
+</th:block>
+</body>
