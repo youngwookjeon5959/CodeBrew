@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="layout/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservation Result</title>
+    <style>
+        body {
+            background-color: #212529;
+            color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            background-color: #343a40;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            margin: 0 auto;
+        }
+        .header {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .detail {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .button {
+            background-color: #007bff;
+            color: #f8f9fa;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+<div class="container">
+    <div class="header">예약에 성공하셨습니다!</div>
+    <div class="detail">날짜: <span th:text="${resDate}"></span></div>
+    <div class="detail">시간: <span th:text="${resTime}"></span></div>
+    <div class="detail">좌석: <span th:text="${resSeatNum}"></span></div>
+    <div class="detail">지점: <span th:text="${branch}"></span></div>
+    <div class="detail">예약한 시간: <span th:text="${regTime}"></span></div>
+    <div class="button-container">
+        <a th:href="@{/main.do}" class="button">메인페이지로 돌아가기</a>
+    </div>
+</div>
+</th:block>
+</body>
+</html>

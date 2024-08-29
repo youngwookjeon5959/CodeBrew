@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout">
+
+<header th:fragment="header" class="header">
+    <nav>
+        <div class="nav-left">
+            <a th:href="@{/main.do}"><img src="/images/logo.jpg" alt="로고" width="150" height="100"></a>
+        </div>
+
+        <div class="menu">
+            <ul>
+                <li> <a th:href="@{/introduce}">회사소개</a></li>
+                <li> <a th:href="@{/notices}">공지사항</a> </li>
+                <li> <a th:href="@{/board/freeListArticles.do}">자유게시판</a> </li>
+                <li> <a th:href="@{/shopInfo.do}">매장예약</a> </li>
+                <li> <a th:href="@{/menu.do}">메뉴안내</a> </li>
+                <li> <a th:href="@{/toss.do}">정기구독</a> </li>
+                <li> <a th:href="@{/customerService.do}">고객센터</a> </li>
+                <li th:if="${session != null and session.member != null and session.member.id == 'admin'}">
+                    <a th:href="@{/admin/dashboard.do}">관리자 페이지</a>
+                </li>
+
+            </ul>
+        </div>
+
+
+
+        <div class="nav-right">
+            <th:block th:if="${session.isLogOn == true and session.member != null}">
+                <form th:action="@{/mypage.do}" method="get">
+                    <input type="hidden" name="id" th:value="${session.member.id}" />
+                    <button type="submit" style="display:none;">Submit</button>
+                    <img src="/images/mypage.png" width="60" alt="마이페이지" style="cursor:pointer;" onclick="this.parentNode.querySelector('button').click();" />
+                </form>
+
+                <!--<h3 th:text="'환영합니다. ' + ${session.member.name} + '님' "></h3>-->
+                <a th:href="@{/member/logout.do}" class="sign-up">로그아웃</a>
+            </th:block>
+
+            <th:block th:unless="${session.isLogOn == true}">
+                <a th:href="@{/member/loginForm.do}" class="sign-up">로그인</a>
+            </th:block>
+        </div>
+    </nav>
+
+    <br>
+    <hr>
+
+
+</header>
+
+</html>

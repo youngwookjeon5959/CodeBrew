@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/chatbot.css" >
+<script src="/js/chatbot.js"></script>
+<link rel="stylesheet" href="/css/jquery-ui.min.css"/>
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+
+
+<head>
+  <meta charset="UTF-8">
+  <title>레이아웃 페이지</title>
+</head>
+<body>
+<div id="container">
+  <header th:replace="layout/header :: header"></header>
+  <div id="content" layout:fragment="content"></div>
+  <div id="sidebar_left" th:replace="layout/sidebar :: sidebar"></div>
+  <footer th:replace="layout/footer :: footer"></footer>
+</div>
+</body>
+</html>

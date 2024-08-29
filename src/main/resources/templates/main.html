@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout">
+
+<head>
+  <meta charset="UTF-8">
+  <title>메인페이지</title>
+  <style>
+     #image_slide {
+      width: 100%;
+      height: 620px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    #animation_canvas {
+      border-radius: 10px;
+      margin: 0 auto;
+      position: relative;
+      width: 100%;  /* 이미지 하나 크기 */
+      height: 620px;
+      overflow: hidden;
+    }
+
+    .slider_panel {
+      width: 300%;  /* 이미지 크기 x 이미지 개수 */
+      height: 620px;
+      position: relative;  /* 변경 */
+      display: flex; /* 추가 */
+    }
+
+    .slider_image {
+      width: 100%;  /* 또는 정확한 픽셀 값 */
+      height: 100%;
+      display: block;
+    }
+
+    .slider_text_panel {
+      position: absolute;
+      top: 250px;
+      left: 800px;
+    }
+
+    .slider_text {
+      padding: 10px;
+      border-radius: 15px;
+      background-color: rgba(55, 55, 55, 0.8);
+      box-shadow: 3px 3px 3px gray;
+      font-size: 1.0em;
+      position: absolute;
+      width: 250px;
+      height: 200px;
+      color: white;
+    }
+
+    .control_panel {
+      position: absolute;
+      top: 380px;
+      left: 270px;
+      height: 13px;
+      overflow: hidden;
+    }
+
+    .control_button {
+      position: relative;
+      cursor: pointer;
+      width: 12px;
+      height: 46px;
+      float: left;
+    }
+
+    .control_button:hover {
+      top: -16px;
+    }
+
+    .control_button.active {
+      top: -31px;
+    }
+
+    .left_control {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      top: 50%;
+      left: 15%;
+      cursor: pointer;
+    }
+
+    .right_control {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      top: 50%;
+      right: 15%;
+      cursor: pointer;
+      }
+
+      #shopInfoPotal {
+          width: 100%;
+
+          height: 300px;
+          margin: 0 auto;
+          position: relative;
+          overflow: hidden;
+        }
+
+    #shopInfoPotal > img:first-child {
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      box-shadow: 5px 5px 5px #222222;
+      position: absolute;
+      left: 300px;
+      top : -50px
+
+    }
+
+    #shopInfoPotal > img:nth-child(2) {
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      box-shadow: 5px 5px 5px #222222;
+      position: absolute;
+      left: 500px;
+      top : 130px
+    }
+    #shopInfoPotal > img:nth-child(3) {
+      position: absolute;
+      left: 750px;
+    }
+
+    .blog-post {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        text-align: right;
+        top: 20px;
+        right: 100px;
+        flex-direction: column;
+       .content-wrapper h2,
+      .content-wrapper p,
+      .content-wrapper button
+          margin: 0;
+          padding: 0;
+    }
+
+
+    #shopInfoPotal button{
+        padding: 10px 20px;
+        margin: 10px 5px;
+        border: none;
+        border-radius: 5px;
+        background-color: #555555; /* Dark gray background for buttons */
+        color: #FFFFFF;
+        cursor: pointer;
+        font-size: 16px;
+        text-align: right;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        text-decoration-line: none;
+        transition: font-size 0.3s ease;
+      }
+
+      #shopInfoPotal  button:hover{
+        font-size: 1.2em;
+        text-decoration-line: none;
+      }
+      #shopInfoPotal  a:visited{
+          color: #FFFFFF;
+      }
+
+    .row{
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    .allcard{
+     display:flex;
+    }
+
+    .txt1{
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 50px;
+    letter-spacing: -.3px;
+    color: ##white;
+    text-align: center;
+    }
+
+    .txt2{
+      padding: 16px 0 32px;
+      font-size: 16px;
+      line-height: 26px;
+      letter-spacing: -.3px;
+      color: #white;
+      text-align: center;
+    }
+    .card{
+    width: 308px;
+    height: 405px;
+    box-sizing: border-box;
+    background-color: #fffdf9;
+    border-radius: 4px;
+    padding: 24px;
+    text-align: center;
+    margin:20px;
+    }
+
+    .img{
+      width:136px;
+      height:136px;
+    }
+
+
+
+
+  </style>
+  <script>
+    $(function(){
+      // 슬라이더 패널에 첫 번째와 마지막 이미지를 복제하여 앞뒤로 추가
+      $('.slider_panel').append($('.slider_image').first().clone());
+      $('.slider_panel').prepend($('.slider_image').eq(-1).clone());
+
+      let index = 1;
+      const totalImages = $('.slider_image').length - 2; // 복제된 이미지 제외한 실제 이미지 개수
+
+      moveSlider(index); // 웹 열자마자 첫번째 이미지에 파란 컨트롤 버튼 추가
+
+      // 컨트롤 버튼 클릭 이벤트
+      $('.control_button').click(function(){
+          index = $(this).index() + 1;
+          moveSlider(index);
+      });
+
+      // 왼쪽 화살표 클릭 이벤트
+      $('.left_control').click(function(){
+          if(index > 1){
+              index--;
+          } else {
+              // 맨 처음 슬라이드에서 왼쪽 화살표를 누르면 마지막 슬라이드로 이동
+              $('.slider_panel').css('left', -(totalImages * 1920) + 'px');
+              index = totalImages;
+          }
+          moveSlider(index);
+      });
+
+      // 오른쪽 화살표 클릭 이벤트
+      $('.right_control').click(function(){
+          if(index < totalImages){
+              index++;
+          } else {
+              // 맨 마지막 슬라이드에서 오른쪽 화살표를 누르면 첫 번째 슬라이드로 이동
+              $('.slider_panel').css('left', '0');
+              index = 1;
+          }
+          moveSlider(index);
+      });
+
+      // 이미지 슬라이드 이동 함수
+      function moveSlider(index){
+          $('.slider_panel').animate({
+              left : -(index * 1920) + 'px'
+          }, 500); // 500ms로 애니메이션 효과를 주어 부드럽게 이동
+
+          // 컨트롤 버튼 활성화 상태 업데이트
+          $('.control_button').removeClass('active');
+          $('.control_button').eq(index - 1).addClass('active');
+
+          // 슬라이드 텍스트 처리
+          $('.slider_text').hide();
+          $('.slider_text').eq(index - 1).fadeIn('slow');
+      }
+  });
+
+  </script>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+
+    <!--이미지 슬라이더 영역-->
+    <div id="image_slide">
+      <div id="animation_canvas">
+        <!--슬라이더 패널 : 이미지가 전환되는 효과-->
+        <div class="slider_panel">
+          <img class="slider_image" src="/images/IMG_1709081028822.jpg" >
+          <img class="slider_image" src="/images/IMG_1723510685740.jpg" >
+          <img class="slider_image" src="/images/IMG_1723510875327.jpg" >
+        </div>
+        <!--각 이미지에 대한 설명글을 담고 있는 패널-->
+        <div class="slider_text_panel">
+          <div class="slider_text">
+            <h2>개발자들의 카페 코드브루</h2>
+            <p>저희 코드브루는 개발자 분들이 편하게 작업할수 있는 공간을 마련하고 있습니다.</p>
+          </div>
+          <div class="slider_text">
+            <h2>신메뉴 출시</h2>
+            <p>한잔 마신것만으로도 하와이에 온 기분! 코드브루에서 4000원에 만나보세요!</p>
+          </div>
+          <div class="slider_text">
+            <h2>코드브루를 소개해주세요!</h2>
+            <p>페이스북 페이지에서 저희를 공유해주시면 추첨을 통해 50분께 아이스 아메리카노 교환권을 드립니다.</p>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!--좌우 컨트롤 버튼 패널-->
+      <div class="left_right_control_panel">
+        <img class="left_control" src="/images/left_arrow.png" alt="">
+        <img class="right_control" src="/images/right_arrow.png" alt="">
+      </div>
+    </div>
+
+     <div class="middle-page">
+             <h2 class="txt1"> 코드브르 구독 중인 <br> 다양한 커피 취향의 커피인들</h2>
+             <p class="txt2">음료에서 디카페인까지. <br> 다양한 취향을 가진 사람들이 구독중인 코드브루</p>
+       <div class="allcard">
+           <div class="card">
+             <img class="img" src="images/influencer_1.jpg" >
+           </div>
+            <div class="card">
+             <img class="img" src="images/influencer_2.jpg" >
+           </div>
+         <div class="card">
+           <img class="img" src="images/influencer_3.jpg" >
+         </div>
+         <div class="card">
+           <img class="img" src="images/influencer_4.jpg" >
+         </div>
+      </div>
+     </div>
+
+
+      <div id="shopInfoPotal">
+        <img src="/images/mainContent2.jpg" alt="매장안내 포탈">
+        <img src="/images/mainContent.jpg" alt="매장안내 포탈">
+          <div class="blog-post">
+            <h2 class="blog-post-title">강남에서 코드브루와 만나요</h2>
+            <p>개발자 분들의 아이디어가 숨 쉬는곳</p>
+            <p>휴식을 원하는 분들의 안식처</p>
+            <p>풍미있는 음료가 기다리는곳</p>
+            <p>코드브루로 오세요</p>
+            <button><a th:href="@{/shopInfo.do}">예약/오시는길</a></button>
+          </div>
+      </div>
+  </div>
+</th:block>
+</body>
+</html>

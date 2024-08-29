@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout">
+<head>
+    <style>
+        .payfail {
+            text-align: center;
+            padding: 50px;
+            border: 2px solid #ffffff;
+            border-radius: 15px;
+            max-width: 600px;
+            margin: 100px auto;
+            background-color: #333333;
+        }
+        .payfail h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .payfail a {
+            display: inline-block;
+            margin: 10px 20px;
+            padding: 15px 25px;
+            color: #ffffff;
+            background-color: #1a73e8;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .payfail a:hover {
+            background-color: #155ab6;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="payfail">
+        <h2>결제에 실패했습니다.</h2>
+        <a th:href="@{/main.do}">메인으로...</a>
+        <a th:href="@{/toss.do}">상품안내로...</a>
+    </div>
+</th:block>
+</body>
+</html>

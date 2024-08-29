@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+
+    <style>
+
+        .memupdate, .resCheck , .orderCheck {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tabs button {
+            background-color: #343a40;
+            color: #f8f9fa;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .tabs button.active {
+            background-color: #007bff;
+        }
+
+        .memupdate, .resCheck , .orderCheck {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #343a40;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .memupdate h1, .resCheck h1 , .orderCheck h1 {
+            color: #f8f9fa;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .memupdate form div {
+            margin-bottom: 20px;
+        }
+
+        .memupdate label {
+            display: block;
+            margin-bottom: 5px;
+            color: #f8f9fa;
+        }
+
+        .memupdate input[type="text"],
+        .memupdate input[type="email"],
+        .memupdate input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #495057;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #495057;
+            color: #f8f9fa;
+        }
+
+        .memupdate input[readonly] {
+            background-color: #6c757d; /* Readonly input field background color */
+            color: #f8f9fa;
+            cursor: not-allowed; /* Change cursor to indicate readonly */
+        }
+
+        .memupdate button {
+            background-color: #007bff;
+            color: #f8f9fa;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+        }
+
+        .memupdate button:hover {
+            background-color: #0056b3;
+        }
+
+
+
+
+        #resCheck h2 , #orderCheck h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #resCheck table ,#orderCheck table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        #resCheck table th, #resCheck table td , #orderCheck table th , #orderCheck table td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        #resCheck table th , #orderCheck table th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #resCheck table tr:nth-child(even) , #orderCheck table tr:nth-child(even){
+            background-color: #777777;
+        }
+
+
+        #resCheck table th, table td , #orderCheck table th, table td {
+            border: 1px solid #ddd;
+        }
+
+        #resCheck .delete-button  ,  #orderCheck .delete-button{
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        #resCheck .delete-button:hover , #orderCheck .delete-button:hover{
+            background-color: #c82333;
+        }
+
+        .memupdate input[type="button"] {
+            background-color: #007bff;
+            color: #f8f9fa;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .memupdate input[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+
+
+        /*임시 택배 css*/
+        #orderCheck a{
+            text-decoration-line: none;
+        }
+
+        #orderCheck a:hover {
+            cursor: pointer;
+            color: #cccccc;
+            text-underline: #cccccc;
+        }
+
+        #orderCheck a:visited {
+            color: white;
+            text-decoration-line: none;
+        }
+
+    </style>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementsByClassName('tablinks')[0].click();
+        });
+
+        function updateMember(obj) {
+            alert("회원정보 수정이 완료되었습니다.");
+            obj.method = "post";
+            obj.action = "/member/updateMember.do";
+            obj.submit();
+        }
+
+        function resDelete(form) {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                form.submit();
+            }
+        }
+
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var addr = '';
+                    var extraAddr = '';
+
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+
+                    if(data.userSelectedType === 'R'){
+                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                            extraAddr += data.bname;
+                        }
+                        if(data.buildingName !== '' && data.apartment === 'Y'){
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        if(extraAddr !== ''){
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                        document.getElementById("extraAddress").value = extraAddr;
+                    } else {
+                        document.getElementById("extraAddress").value = '';
+                    }
+
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById("address").value = addr;
+                    document.getElementById("detailAddress").focus();
+                }
+            }).open();
+        }
+
+        function updateMember(form) {
+            if (confirm("회원정보를 수정하시겠습니까?")) {
+                form.method = "post";
+                form.action = "/member/updateMember.do";
+                form.submit();
+            }
+        }
+
+
+
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var addr = '';
+                    var extraAddr = '';
+
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+
+                    if(data.userSelectedType === 'R'){
+                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                            extraAddr += data.bname;
+                        }
+                        if(data.buildingName !== '' && data.apartment === 'Y'){
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        if(extraAddr !== ''){
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                        document.getElementById("extraAddress").value = extraAddr;
+                    } else {
+                        document.getElementById("extraAddress").value = '';
+                    }
+
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById("address").value = addr;
+                    document.getElementById("detailAddress").focus();
+                }
+            }).open();
+        }
+
+
+
+
+
+
+    </script>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="tabs">
+        <button class="tablinks" onclick="openTab(event, 'memupdate')">회원 정보 수정</button>
+        <button class="tablinks" onclick="openTab(event, 'resCheck')">예약 확인</button>
+        <button class="tablinks" onclick="openTab(event, 'orderCheck')">상품 배송 조회</button>
+    </div>
+    <div id="memupdate" class="tabcontent memupdate">
+        <h1>My Page</h1>
+        <form action="" th:object="${member}" method="post">
+            <div>
+                <label for="id">ID :</label>
+                <input type="text" id="id" th:field="*{id}" readonly />
+            </div>
+            <div>
+                <label for="pw">비밀번호 :</label>
+                <input type="text" id="pw" th:field="*{pw}" />
+            </div>
+            <div>
+                <label for="name">이름 :</label>
+                <input type="text" id="name" th:field="*{name}" readonly/>
+            </div>
+            <div>
+                <label for="email">Email :</label>
+                <input type="email" id="email" th:field="*{email}" readonly />
+            </div>
+            <div>
+                <label for="phoneNum">전화번호 :</label>
+                <input type="text" id="phoneNum" th:field="*{phoneNum}" />
+            </div>
+
+            <div>
+                <label for="postcode">우편번호:</label>
+                <input type="text" id="postcode" th:field="*{postcode}" readonly />
+                <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기">
+            </div>
+            <div>
+                <label for="address">주소:</label>
+                <input type="text" id="address" th:field="*{address}" readonly />
+            </div>
+            <div>
+                <label for="detailAddress">상세주소:</label>
+                <input type="text" id="detailAddress" th:field="*{detailAddress}" />
+            </div>
+            <div>
+                <label for="extraAddress">참고항목:</label>
+                <input type="text" id="extraAddress" th:field="*{extraAddress}" readonly />
+            </div>
+
+            <input type="submit" value="정보수정" onclick="updateMember(this.form);"></input>
+        </form>
+    </div>
+    <div id="resCheck" class="tabcontent resCheck">
+        <div th:if="${reservations != null}">
+            <h2>예약 내역</h2>
+            <table>
+                <tr>
+                    <th>예약 번호</th>
+                    <th>지점</th>
+                    <th>예약 날짜</th>
+                    <th>예약 시간</th>
+                    <th>좌석 번호</th>
+                    <th>예약한 시간</th>
+                    <th>작업</th>
+                </tr>
+                <tr th:each="reservations : ${reservations}">
+                    <td th:text="${reservations.resNum}"></td>
+                    <td th:text="${reservations.branch}"></td>
+                    <td th:text="${reservations.resDate}"></td>
+                    <td th:text="${reservations.resTime}"></td>
+                    <td th:text="${reservations.resSeatNum}"></td>
+                    <td th:text="${reservations.regTime}"></td>
+                    <td>
+                        <form th:action="@{/reservations/delete}" method="post" onsubmit="event.preventDefault(); resDelete(this);">
+                            <input type="hidden" name="resNum" th:value="${reservations.resNum}" />
+                            <button type="submit" class="delete-button">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="orderCheck" class="tabcontent orderCheck">
+        <h1>주문 내역</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>주문번호</th>
+                <th>구매가격</th>
+                <th>상품이름</th>
+                <th>주문일시</th>
+                <th>배송조회</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.orderNo}"></td>
+                <td th:text="${#numbers.formatInteger(order.amount,3, 'COMMA')+ ' 원'}"></td>
+                <td th:text="${order.orderName}"></td>
+                <td th:text="${order.orderDate}"></td>
+                <td><a href="https://link.tracker.delivery/track?client_id=7vk3o883icr5igst2c8vvmrdde&carrier_id=kr.cjlogistics&tracking_number=1234567890" target="_blank">배송조회</a></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</th:block>
+</body>
+</html>

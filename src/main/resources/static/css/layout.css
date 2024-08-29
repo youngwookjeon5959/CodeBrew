@@ -1,0 +1,166 @@
+@charset "utf-8";
+
+@font-face {
+	font-family: "pretendard";
+	src: url("/static/font/Pretendard-Regular.otf");
+}
+@font-face {
+	font-family: "pretendard_thin";
+	src: url("/static/font/Pretendard-Thin.otf");
+}
+@font-face {
+	font-family: "pretendard_Bold";
+	src: url("/static/font/Pretendard-Bold.otf");
+}
+
+*{
+	font-family: "pretendard",sans-serif;
+}
+h1, h2 , h3{
+	font-family: "pretendard_Bold",sans-serif;
+	font-weight: bold;
+}
+
+body {
+	background-color: #212529;
+	color: #f8f9fa;
+}
+
+.card {
+	background-color: #343a40;
+}
+.card-title, .card-text {
+	color: #f8f9fa;
+}
+.blockquote {
+	color: #f8f9fa;
+}
+header {
+	padding: 1rem 0;
+}
+nav {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+nav a {
+	color: #f8f9fa;
+	margin-right: 1rem;
+}
+
+.nav-right {
+	display: flex;
+	align-items: center;
+}
+
+.sign-up {
+	text-decoration-line: none;
+	color: #888;
+	border: 3px solid #888;
+	box-shadow: 2px 2px 2px #cccccc;
+	border-radius: 10px;
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+}
+
+.header{
+  padding:0px;
+}
+
+.menu {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 1rem 0;
+}
+
+.menu a {
+	color: #f8f9fa;
+	margin-right: 3rem;
+	padding: 0.5rem 0;
+	text-decoration-line: none;
+	font-size: 1.1em;
+	transition: all 0.3s ease; /* 변화를 부드럽게 만들기 위한 트랜지션 설정 */
+}
+
+.menu a:hover{
+	font-size: 1.3em;
+	font-weight: 700;
+	color: #aaaaaa;
+	text-decoration-line: none;
+}
+
+.menu li{
+	list-style-type: none;
+	display: inline-block;
+}
+
+.featured-post {
+	margin-bottom: 2rem;
+}
+
+.post-previews {
+	display: flex;
+	justify-content: space-between;
+}
+
+.post-preview {
+	background-color: #343a40;
+	padding: 1rem;
+	margin-right: 1rem;
+	flex: 1;
+}
+
+
+.footbody {
+	background-color: #333;
+	padding: 20px;
+}
+
+.footdiv {
+	display: flex;
+	flex-wrap: wrap;
+	max-width: 1200px; /* Adjust max-width as needed */
+	margin: 0 auto; /* Center align the content */
+}
+
+.footdiv img {
+	max-width: 150px; /* Ensure logo image does not exceed specified width */
+	margin-right: 10px; /* Space between logo and contact info */
+}
+.footdiv p {
+	margin: 10px 0 10px 0;
+}
+
+.contact-info {
+	flex: 1; /* Take remaining space */
+}
+
+.footdiv > img{
+	margin-right : 100px;
+}
+
+.logos {
+	margin-left: auto; /* Push logos to the right */
+
+}
+
+.logos img {
+	margin-left: 10px; /* Space between individual logos */
+	margin-bottom: 20px;
+}
+.Copyright{
+	bottom: 0;
+}
+
+
+
+.nav-left{
+	margin-left: 50px;
+}
+
+
+.nav-right{
+	margin-right: 50px ;
+}
+
+

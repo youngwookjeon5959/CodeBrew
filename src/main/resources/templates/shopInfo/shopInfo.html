@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>매장 안내</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+        .container {
+            width: 70%;
+            display: flex;
+            margin: 0 auto;
+        }
+        .map-container {
+            flex: 1;
+            margin-left: 50px;
+            border-radius: 15px 0 0 15px;
+            box-shadow: 5px 5px 5px gray;
+        }
+        .infowindow {
+            margin: 0 auto;
+            height: 230px;
+            width: 220px;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: salmon;
+            border: none;
+            border-radius: 15px;
+        }
+        .list-container {
+            box-shadow: 5px 5px 5px gray;
+            border-radius: 0 15px 15px 0;
+            color: #212529;
+            background-color: #cdcdcd;
+            width: 250px;
+            padding-left: 20px;
+            margin-right: 50px;
+            text-align: left;
+        }
+        .location-name {
+            cursor: pointer;
+        }
+        .location-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .location-item {
+            margin-bottom: 10px;
+        }
+        .location-item button {
+            margin-top: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .res_button {
+            margin: 0 auto;
+            display: block;
+            font-weight: bold;
+            font-size: 1.0em;
+            width: 80px;
+            height: 50px;
+            border: none;
+            border-radius: 25px;
+        }
+        .loca_name {
+            margin: 0 auto;
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: bold;
+            color: #212529;
+        }
+        .loca_addr {
+            margin: 10px auto;
+            text-align: center;
+            font-size: 1.0em;
+            color: #212529;
+        }
+        /* 검색 관련 스타일 추가 */
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #searchButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <h1>코드브루 매장 안내</h1>
+    <!-- 검색 기능 추가 -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="코드브루 지점 검색 (예: 강남, 주차)">
+        <button id="searchButton">검색</button>
+    </div>
+    <div class="container">
+        <div id="map" class="map-container" style="height: 500px;"></div>
+        <div class="list-container">
+            <ul id="locationList" class="location-list"></ul>
+        </div>
+    </div>
+
+    <!--모달창-->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalAddress"></p>
+            <p id="modalDetails"></p>
+        </div>
+    </div>
+
+    <!-- 카카오 맵 스크립트 -->
+    <th:block th:utext="${script}"></th:block>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var map;
+        var markers = [];
+        var infowindows = [];
+        var locationInfos = [];
+
+        var locations = [
+            {name: '코드브루 강남지점', lat: 37.517130, lng: 127.047354, details: "오픈 시간: 08:00 - 22:00, 주차 가능"},
+            {name: '코드브루 중랑지점', lat: 37.606648, lng: 127.095335, details: "오픈 시간: 08:00 - 22:00, 와이파이 제공"},
+            {name: '코드브루 동대문지점', lat: 37.574406, lng: 127.039566, details: "오픈 시간: 08:00 - 22:00, 애완동물 동반 가능"},
+            {name: '코드브루 노원지점', lat: 37.654239, lng: 127.056352, details: "오픈 시간: 08:00 - 22:00, 스터디룸 보유"},
+            {name: '코드브루 도봉지점', lat: 37.668675, lng: 127.047066, details: "오픈 시간: 08:00 - 22:00, 루프탑 카페"},
+            {name: '코드브루 서초지점', lat: 37.483625, lng: 127.032425, details: "오픈 시간: 08:00 - 22:00, 키즈존 운영"},
+            {name: '코드브루 송파지점', lat: 37.514590, lng: 127.105939, details: "오픈 시간: 08:00 - 22:00, 24시간 운영"},
+            {name: '코드브루 강동지점', lat: 37.530026, lng: 127.123731, details: "오픈 시간: 08:00 - 22:00, 전기차 충전소 구비"},
+            {name: '코드브루 강서지점', lat: 37.550980, lng: 126.849667, details: "오픈 시간: 08:00 - 22:00, 대형 주차장 완비"},
+            {name: '코드브루 구로지점', lat: 37.495469, lng: 126.887680, details: "오픈 시간: 08:00 - 22:00, 코딩 교육 프로그램 운영"}
+        ];
+
+        function initMap() {
+            var mapContainer = document.getElementById('map');
+            if (!mapContainer) {
+                console.error('지도 컨테이너를 찾을 수 없습니다.');
+                return;
+            }
+
+            var mapOption = {
+                center: new kakao.maps.LatLng(37.566826, 126.978656),  // 서울시청 좌표
+                level: 9  // 서울 전체를 보기 위해 줌 레벨 조정
+            };
+
+            map = new kakao.maps.Map(mapContainer, mapOption);
+            console.log('지도가 생성되었습니다.');
+
+            var locationList = document.getElementById('locationList');
+
+            locations.forEach(processLocation);
+
+            // 검색 기능 초기화
+            initSearch();
+        }
+
+        function processLocation(location) {
+            var position = new kakao.maps.LatLng(location.lat, location.lng);
+
+            var marker = new kakao.maps.Marker({
+                map: map,
+                position: position
+            });
+
+            markers.push(marker);
+
+            var infowindowContent =
+                '<div class="infowindow">' +
+                '<h3 class="loca_name">' + location.name + '</h3>' +
+                '<p class="loca_addr">주소 : ' + location.lat + ', ' + location.lng + '</p>' +
+                '<p class="loca_addr">' + location.details + '</p>' +
+                '<div class="resDiv">' +
+                '&nbsp<button class="res_button" onclick="goToReservations(\'' + location.name + '\')">예약하기</button>' +
+                '</div>' +
+                '</div>';
+
+            var infowindow = new kakao.maps.InfoWindow({
+                content: infowindowContent,
+                removable: true,
+                zIndex: 1
+            });
+
+            infowindows.push(infowindow);
+
+            kakao.maps.event.addListener(marker, 'click', function() {
+                closeAllInfoWindows();
+                infowindow.open(map, marker);
+            });
+
+            console.log(location.name + ' 마커가 생성되었습니다.');
+
+            locationInfos.push({
+                name: location.name,
+                position: position,
+                marker: marker,
+                infowindow: infowindow
+            });
+
+            var listItem = document.createElement('li');
+            listItem.className = 'location-item';
+            listItem.innerHTML = '<strong class="location-name">' + location.name + '</strong><br>' + location.details;
+
+            listItem.querySelector('.location-name').onclick = function() {
+                map.setCenter(position);
+                closeAllInfoWindows();
+                infowindow.open(map, marker);
+            };
+
+            locationList.appendChild(listItem);
+        }
+
+        function closeAllInfoWindows() {
+            infowindows.forEach(function(infowindow) {
+                infowindow.close();
+            });
+        }
+
+        function goToReservations(placeName) {
+            var reservationsUrl = /*[[@{/reservations}]]*/ '/reservations';
+            window.location.href = reservationsUrl + '?branch=' + encodeURIComponent(placeName);
+        }
+
+        // 검색 기능 초기화
+        function initSearch() {
+            var searchInput = document.getElementById('searchInput');
+            var searchButton = document.getElementById('searchButton');
+
+            searchButton.addEventListener('click', function() {
+                searchPlaces();
+            });
+
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchPlaces();
+                }
+            });
+        }
+
+        // 장소 검색 함수
+        function searchPlaces() {
+            var keyword = document.getElementById('searchInput').value.toLowerCase();
+            if (!keyword.replace(/^\s+|\s+$/g, '')) {
+                alert('키워드를 입력해주세요!');
+                return false;
+            }
+
+            var filteredLocations = locations.filter(function(location) {
+                return location.name.toLowerCase().includes(keyword) ||
+                       location.details.toLowerCase().includes(keyword);
+            });
+
+            displayFilteredLocations(filteredLocations);
+        }
+
+        // 필터링된 장소 표시 함수
+        function displayFilteredLocations(filteredLocations) {
+            // 모든 마커 숨기기
+            markers.forEach(function(marker) {
+                marker.setMap(null);
+            });
+
+            // 필터링된 장소만 표시
+            var bounds = new kakao.maps.LatLngBounds();
+            filteredLocations.forEach(function(location) {
+                var locationInfo = locationInfos.find(info => info.name === location.name);
+                if (locationInfo) {
+                    locationInfo.marker.setMap(map);
+                    bounds.extend(locationInfo.position);
+                }
+            });
+
+            // 지도 범위 재설정
+            if (!bounds.isEmpty()) {
+                map.setBounds(bounds);
+            }
+
+            // 리스트 업데이트
+            updateLocationList(filteredLocations);
+        }
+
+        // 리스트 업데이트 함수
+        function updateLocationList(filteredLocations) {
+            var locationList = document.getElementById('locationList');
+            locationList.innerHTML = '';
+
+            filteredLocations.forEach(function(location) {
+                var listItem = document.createElement('li');
+                listItem.className = 'location-item';
+                listItem.innerHTML = '<strong class="location-name">' + location.name + '</strong><br>' + location.details;
+
+                listItem.querySelector('.location-name').onclick = function() {
+                    var locationInfo = locationInfos.find(info => info.name === location.name);
+                    if (locationInfo) {
+                        map.setCenter(locationInfo.position);
+                        closeAllInfoWindows();
+                        locationInfo.infowindow.open(map, locationInfo.marker);
+                    }
+                };
+
+                locationList.appendChild(listItem);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof kakao !== 'undefined' && kakao.maps) {
+                kakao.maps.load(initMap);
+            } else {
+                console.error('Kakao maps API is not loaded');
+            }
+        });
+        /*]]>*/
+    </script>
+</th:block>
+</body>
+</html>

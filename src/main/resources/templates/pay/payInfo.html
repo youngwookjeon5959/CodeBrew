@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout">
+<head>
+    <style>
+        .payInfo {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(to bottom right, #fff, #f1f1f1); /* Gradient background */
+            border-radius: 15px; /* Smooth rounded corners */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Deep shadow for a floating effect */
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Modern font */
+            color: #333; /* Text color */
+        }
+        .payInfo h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #444; /* Subtle color for the header */
+        }
+        .payInfo p {
+            font-size: 16px;
+            line-height: 1.6; /* Better readability */
+        }
+        .payInfo select,
+        .payInfo input[type="text"],
+        .payInfo input[type="number"],
+        .payInfo input[type="tel"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc; /* Light grey border */
+            border-radius: 8px; /* Smooth rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            font-size: 16px;
+        }
+        .payInfo select {
+            background: #eee; /* Light grey background for the dropdown */
+            color: #333;
+        }
+        .payInfo label {
+            display: block;
+            font-size: 16px;
+            font-weight: bold; /* Bold text for labels */
+            margin-bottom: 5px;
+        }
+        .payInfo button img{
+
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .payInfo button {
+            background: linear-gradient(to bottom, lightskyblue, #ccccff); /* Gradient background */
+            box-shadow: 3px 3px 5px #ccc;
+            border: none;
+            border-radius: 10px;
+            width: 70%;
+            height: 50px;
+        }
+        .payInfo .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .payInfo .button-container > div {
+            flex: 1;
+            padding: 0 10px;
+            text-align: center; /* Center align the button within each div */
+        }
+        .payInfo .button-container img {
+            width: 100px; /* Set a consistent width for all payment images */
+            height: auto; /* Maintain aspect ratio */
+            max-height: 40px; /* Optionally, set a maximum height */
+        }
+        .payInfo .section {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc; /* Light grey border for sections */
+            border-radius: 10px; /* Rounded corners for sections */
+            background-color: #fafafa; /* Light background color for sections */
+        }
+        .payInfo .section h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #333; /* Subtle color for section headers */
+        }
+    </style>
+    <meta charset="utf-8" />
+    <title>결제 상세</title>
+    <!-- 토스페이먼츠 결제창 SDK 추가 -->
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="payInfo">
+        <h2>주문 확인</h2>
+        <div class="section">
+            <h3>주문 정보</h3>
+            <p><img th:src="@{${image}}" alt="Product Image" style="width:200px;height:250px;border-radius:8px;"></p>
+            <p><label for="orderName">주문 상품 : </label> <input type="text" id="orderName" th:value="${orderName}" disabled></p>
+            <p><label for="amount">결제 금액 : </label> <input type="text" id="amount" th:value="${amount} + ' 원'" disabled></p>
+            <input type="hidden" id="customerName" th:value="${customerName}">
+        </div>
+        <div class="section">
+            <h3>배송 정보</h3>
+            <p><label for="shippingType">배송 종류 : </label>
+                <select id="shippingType">
+                    <option value="택배배송">택배배송</option>
+                    <option value="방문수령">방문수령</option>
+                </select>
+            </p>
+            <p><label for="userName">받으실 분 : </label> <input type="text" id="userName" th:value="${userName}"></p>
+            <p><label for="userAdrr">주소번호 : </label><input type="text" id="postCode" th:value="${postCode}"></p>
+            <p><label for="userAdrr">주소 : </label><input type="text" id="userAdrr" th:value="${userAdrr}"></p>
+            <p><label for="userDetailAddress">상세주소 : </label><input type="text" id="userDetailAddress" th:value="${userDetailAddress}"></p>
+            <p><label for="modal-phone">휴대폰 번호 : </label> <input type="tel" id="modal-phone" th:value="${userPhNum}"></p>
+        </div>
+        <div class="section">
+            <h3>결제 수단</h3>
+            <div class="button-container">
+                <div>
+                    <button type="submit" onclick="proceedToPayment()"><img src="/images/tosspay.png" alt="토스페이"></button>
+                </div>
+                <div>
+                    <button><img src="/images/naverpay.png" alt="네이버페이"></button>
+                </div>
+                <div>
+                    <button><img src="/images/kakaopay.png" alt="카카오페이"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var clientKey = "test_ck_yZqmkKeP8gaxKYpBnaejVbQRxB9l";
+        var tossPayments = TossPayments(clientKey);
+
+        function requestPayment(amount, orderId, orderName, customerName) {
+            tossPayments
+                .requestPayment("카드", {
+                    amount: amount, // 결제 금액
+                    orderId: orderId, // 주문번호
+                    orderName: orderName, // 구매상품
+                    customerName: customerName, // 구매자 이름
+                    successUrl: `http://localhost:8090/toss/success.do?amount=${amount}&orderName=${encodeURIComponent(orderName)}&customerName=${encodeURIComponent(customerName)}`, // 성공 URL
+                    failUrl: "http://localhost:8090/toss/fail.do", // 실패 URL
+                })
+                .catch(function (error) {
+                    if (error.code === "USER_CANCEL") {
+                        // 결제 고객이 결제창을 닫았을 때 에러 처리
+                    } else if (error.code === "INVALID_CARD_COMPANY") {
+                        // 유효하지 않은 카드 코드에 대한 에러 처리
+                    } else {
+                        // 다른 에러 처리
+                        console.error(error);
+                    }
+                });
+        }
+
+        function proceedToPayment() {
+            var amountText = document.getElementById("amount").value;
+            var amount = parseInt(amountText.replace(/[^0-9]/g, '')); // 숫자만 추출
+
+            var orderName = document.getElementById("orderName").value;
+            var customerName = document.getElementById("customerName").value;
+            var orderId = "order-" + new Date().getTime(); // Unique order ID
+
+            requestPayment(amount, orderId, orderName, customerName);
+        }
+    </script>
+</th:block>
+</body>
+</html>

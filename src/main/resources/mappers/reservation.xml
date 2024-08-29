@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="scv.DevOpsunity.Reservation.dao.ResDAO">
+
+    <resultMap type="ResDTO" id="resResult">
+        <result property="resNum" column="resNum"/>
+        <result property="resDate" column="resDate"/>
+        <result property="resTime" column="resTime"/>
+        <result property="resSeatNum" column="resSeatNum"/>
+        <result property="user_id" column="user_id"/>
+        <result property="branch" column="branch"/>
+        <result property="regTime" column="regTime"/>
+    </resultMap>
+
+    <select id="selectAllReservations" resultType="ResDTO">
+        SELECT * FROM reservation_tbl
+        ORDER BY resDate ASC
+    </select>
+
+    <select id="selectReservationByUserId" resultType="ResDTO" parameterType="String">
+        SELECT resNum, resDate, resTime, resSeatNum, branch, regTime
+        FROM reservation_tbl
+        WHERE user_id = #{user_id}
+    </select>
+
+    <insert id="insertReservation" parameterType="ResDTO">
+        INSERT INTO reservation_tbl (user_id, resDate, resTime, resSeatNum, branch, regTime)
+        VALUES (#{user_id}, #{resDate}, #{resTime}, #{resSeatNum}, #{branch}, now())
+    </insert>
+
+    <delete id="deleteReservationByResNum" parameterType="int">
+        DELETE FROM reservation_tbl
+        WHERE resNum = #{resNum}
+    </delete>
+
+    <select id="findUnavailableSeats" resultType="ResDTO">
+        SELECT resDate, resTime, resSeatNum, branch
+        FROM reservation_tbl
+        WHERE resDate = #{resDate} AND resTime = #{resTime}
+    </select>
+
+    <!-- 추가된 쿼리: branch와 regTime을 기반으로 예약을 조회 -->
+    <select id="selectReservationByBranchAndRegTime" resultType="ResDTO">
+        SELECT resNum, resDate, resTime, resSeatNum, user_id, branch, regTime
+        FROM reservation_tbl
+        WHERE branch = #{branch} AND regTime = #{regTime}
+    </select>
+
+</mapper>
