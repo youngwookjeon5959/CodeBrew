@@ -1,6 +1,9 @@
 
 
 <h1> 프로젝트명:커피 구독 서비스 웹사이트 </h1>
+메인페이지 이미지
+![image](https://github.com/user-attachments/assets/d974c2c9-1c7f-4427-8778-6fe11e3481ea)
+<br>
 <h3>소개</h3>
     사용자가 선호하는 커피를 정기적으로 받아볼 수 있는 구독형 서비스를 제공하기 위해 개발된 웹사이트입니다. <br>
     다양한 원두 옵션과 개인 맞춤 설정을 통해 손쉽게 구독을 관리할 수 있으며, 결제와 배송 관리가 간편하게 이루어집니다.<br>
@@ -21,6 +24,17 @@
   자유게시판<br>
   관리자페이지<br>
 
+<h3>설계 및 아키텍처</h3>
+    MVC 패턴을 적용하여 폴더 구조를 설계하였으며, Controller, ControllerImpl, DAO, DTO, Service, ServiceImpl로 구성된 트리 구조를 설계했습니다.<br>
+    Spring Boot와 Thymeleaf를 활용하여 아키텍처를 설계하고 프레임워크를 설정하였습니다.<br>
+    MyBatis를 사용하여 데이터베이스와의 매핑 및 쿼리를 작성했습니다.<br>
+    
+  <h3>게시판 구현</h3>
+    기본적인 CRUD 기능을 제공하는 게시판 시스템을 구축하여 사용자가 게시글을 작성, 조회, 수정, 삭제할 수 있는 기능을 구현했습니다.<br>
+    사용자 친화적인 UI/UX를 위해 HTML/CSS와 JavaScript로 웹 인터페이스를 설계했습니다.<br>
+    게시글 처리 기능을 위한 Controller, Service, DAO를 설계하고 구현하였으며, DTO를 통해 데이터 전송 구조를 정의했습니다.<br>
+    MyBatis로 SQL 매핑 및 데이터베이스와의 상호작용 최적화 작업을 수행했습니다.<br>
+
 <h3>문제 해결</h3>
   문제: SQL 쿼리 오류로 데이터 조회 실패<br>
   해결: 쿼리 구문을 검토하고 수정하여 문제를 해결한 과정을 설명합니다.<br>
@@ -36,9 +50,6 @@
   <br>
   <br>
 <h3>홈페이지 각 기능 장면 이미지</h3>
-
-메인페이지 이미지
-![image](https://github.com/user-attachments/assets/d974c2c9-1c7f-4427-8778-6fe11e3481ea)
 
 게시판 구현 이미지
 ![image](https://github.com/user-attachments/assets/bf5f03a7-91e8-4b30-a662-0ca8b749a7c5)
