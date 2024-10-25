@@ -32,9 +32,10 @@
   추가적인 커피 원두 옵션 제공<br>
   모바일 최적화 및 반응형 디자인 구현<br>
   사용자 맞춤형 추천 알고리즘 개선<br>
-  
-
-
+  <br>
+  <br>
+  <br>
+<h3>홈페이지 각 기능 장면 이미지</h3>
 
 메인페이지 이미지
 ![image](https://github.com/user-attachments/assets/d974c2c9-1c7f-4427-8778-6fe11e3481ea)
