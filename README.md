@@ -1,8 +1,9 @@
 
 
 <h1> 프로젝트명:커피 구독 서비스 웹사이트 </h1>
-메인페이지 이미지
-![image](https://github.com/user-attachments/assets/d974c2c9-1c7f-4427-8778-6fe11e3481ea)
+메인페이지 이미지<br>
+![image](https://github.com/user-attachments/assets/8263f2c7-b71a-4643-ab74-87a65e26261f)
+
 <br>
 <h3>소개</h3>
     사용자가 선호하는 커피를 정기적으로 받아볼 수 있는 구독형 서비스를 제공하기 위해 개발된 웹사이트입니다. <br>
