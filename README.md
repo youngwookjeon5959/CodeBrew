@@ -3,7 +3,7 @@
 <h1> 프로젝트명:커피 구독 서비스 웹사이트 </h1>
 메인페이지 이미지
 
-    ![image](https://github.com/user-attachments/assets/8263f2c7-b71a-4643-ab74-87a65e26261f)
+![image](https://github.com/user-attachments/assets/8263f2c7-b71a-4643-ab74-87a65e26261f)
 
 <br>
 <h3>소개</h3>
